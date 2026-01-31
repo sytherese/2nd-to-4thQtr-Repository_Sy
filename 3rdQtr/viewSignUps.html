@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>View Signups</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #fdecef;
+        padding: 20px;
+    }
+
+    h1 {
+        color: #c94a6a;
+    }
+
+    a {
+        color: #c94a6a;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    select {
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid #f2a7b5;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    th {
+        background-color: #f4a6b8;
+        color: white;
+        padding: 10px;
+    }
+
+    td {
+        border: 1px solid #f4b6c2;
+        padding: 8px;
+        text-align: center;
+    }
+
+    .message {
+        margin-top: 20px;
+        font-weight: bold;
+        color: #c94a6a;
+    }
+</style>
+
+
+<script>
+    let allSignups = [];
+
+    // Load signups when page opens
+    window.onload = function () {
+        let stored = localStorage.getItem("signups");
+
+        if (stored) {
+            allSignups = JSON.parse(stored);
+            populateTable(allSignups);
+        } else {
+            document.getElementById("tableArea").innerHTML =
+                "<p class='message'>No Sign Ups found.</p>";
+        }
+    };
+
+    // Display signups in table
+    function populateTable(list) {
+        let tableHTML = `
+            <p>Total Signup: ${list.length}</p>
+            <table>
+                <tr>
+                    <th>Club</th>
+                    <th>ID</th>
+                    <th>Fullname</th>
+                    <th>Grade</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th>Intern/Extern</th>
+                </tr>`;
+
+        if (list.length === 0) {
+            tableHTML += `
+                <tr>
+                    <td colspan="7">No Sign Ups for the club</td>
+                </tr>`;
+        } else {
+            list.forEach(s => {
+                tableHTML += `
+                <tr>
+                    <td>${s.club}</td>
+                    <td>${s.id}</td>
+                    <td>${s.fullname}</td>
+                    <td>${s.grade}</td>
+                    <td>${s.email}</td>
+                    <td>${s.mobile}</td>
+                    <td>${s.status}</td>
+                </tr>`;
+            });
+        }
+
+        tableHTML += "</table>";
+        document.getElementById("tableArea").innerHTML = tableHTML;
+    }
+
+    // Filter signups by club
+    function filterClub() {
+        let selected = document.getElementById("clubFilter").value;
+
+        if (selected === "ALL") {
+            populateTable(allSignups);
+        } else {
+            let filtered = allSignups.filter(s => s.club === selected);
+            populateTable(filtered);
+        }
+    }
+</script>
+</head>
+
+<body>
+
+<h1>Show List of Students Who Signed-Up</h1>
+<p><strong>by AL Mendoza</strong></p>
+
+<a href="signup.html">Back to Signup</a>
+
+<br><br>
+
+<label>
+    Select Your Club
+    <select id="clubFilter" onchange="filterClub()">
+        <option value="ALL">-- select an option --</option>
+        <option value="Bake Club">Bake Club</option>
+        <option value="Himig Agham">Himig Agham</option>
+        <option value="Computron">Computron</option>
+        <option value="Invictus">Invictus</option>
+    </select>
+</label>
+
+<div id="tableArea"></div>
+
+</body>
+</html>

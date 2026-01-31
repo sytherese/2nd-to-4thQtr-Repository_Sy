@@ -91,104 +91,108 @@
 
 
 <script>
-    function confirmSubmit() {
-        return confirm("Are you sure you want to submit this application?");
-    }
+    // Function to save signup data to localStorage
+    function saveSignup(event) {
+        event.preventDefault(); // prevent page refresh
 
-    function confirmReset() {
-        return confirm("Are you sure you want to reset all the information?");
-    }
-
-    function checkEmpty(element) {
-        if (element.value.trim() === "") {
-            element.classList.add("error");
-        } else {
-            element.classList.remove("error");
+        if (!confirm("Do you want to submit this sign-up?")) {
+            return;
         }
+
+        // Create an object to store user input
+        let signupData = {
+            id: document.getElementById("studentId").value,
+            fullname: document.getElementById("fullname").value,
+            grade: document.getElementById("grade").value,
+            email: document.getElementById("email").value,
+            mobile: document.getElementById("mobile").value,
+            status: document.querySelector('input[name="status"]:checked').value,
+            club: document.getElementById("club").value
+        };
+
+        // Check if localStorage already has signups
+        let signups = localStorage.getItem("signups");
+
+        if (signups) {
+            signups = JSON.parse(signups); // convert string to array
+        } else {
+            signups = []; // initialize if empty
+        }
+
+        signups.push(signupData); // add new signup
+
+        // Save back to localStorage as string
+        localStorage.setItem("signups", JSON.stringify(signups));
+
+        alert("Signup saved successfully!");
+        document.getElementById("signupForm").reset();
+    }
+
+    function goToView() {
+        window.location.href = "viewSignUps.html";
     }
 </script>
 </head>
 
 <body>
 
-<form method="post" action="submit"
-      onsubmit="return confirmSubmit()"
-      onreset="return confirmReset()">
-
+<form id="signupForm" onsubmit="saveSignup(event)">
     <fieldset>
         <legend>Student Information</legend>
 
         <label>
-            Student ID:
-            <input type="number" name="student_id" required>
+            Student ID
+            <input type="number" id="studentId" required>
         </label>
 
         <label>
-            Full Name:
-            <input type="text" name="full_name" required onblur="checkEmpty(this)">
+            Full Name
+            <input type="text" id="fullname" required>
         </label>
 
         <label>
-            Birthday:
-            <input type="date" name="birthday" required>
-        </label>
-
-        <label>
-            Email Address:
-            <input type="email" name="email" required>
-        </label>
-    </fieldset>
-
-    <fieldset>
-        <legend>Organization Details</legend>
-
-        <label>
-            Mobile Phone:
-            <input type="text" name="mobile" required onblur="checkEmpty(this)">
-        </label>
-
-        <label>
-            Grade Level:
-            <select name="grade_level" required>
-                <option value="">-- Select Grade --</option>
-                <option value="g7">Grade 7</option>
-                <option value="g8">Grade 8</option>
-                <option value="g9">Grade 9</option>
-                <option value="g10">Grade 10</option>
-                <option value="g11">Grade 11</option>
-                <option value="g12">Grade 12</option>
+            Grade Level
+            <select id="grade" required>
+                <option value="">Select</option>
+                <option value="Grade 9">Grade 9</option>
+                <option value="Grade 10">Grade 10</option>
+                <option value="Grade 11">Grade 11</option>
+                <option value="Grade 12">Grade 12</option>
             </select>
         </label>
 
         <label>
-            Intern / Extern:
-            <input type="radio" name="status" value="intern_role" required> Intern
-            <input type="radio" name="status" value="extern_role" required> Extern
+            Email
+            <input type="email" id="email" required>
         </label>
 
         <label>
-            Preferred Organization / Club:
-            <select name="club" required>
-                <option value="">-- Select Club --</option>
-                <option value="arts">Likha</option>
-                <option value="sports">Volant</option>
-                <option value="baking">Bake Club</option>
-                <option value="debate">Invictus</option>
-                <option value="media">Exposure</option>
+            Mobile
+            <input type="text" id="mobile" required>
+        </label>
+
+        <label>
+            Intern / Extern
+            <input type="radio" name="status" value="Intern" required> Intern
+            <input type="radio" name="status" value="Extern"> Extern
+        </label>
+
+        <label>
+            Club
+            <select id="club" required>
+                <option value="">Select</option>
+                <option value="Bake Club">Bake Club</option>
+                <option value="Himig Agham">Himig Agham</option>
+                <option value="Computron">Computron</option>
+                <option value="Invictus">Invictus</option>
             </select>
-        </label>
-
-        <label>
-            Why do you want to join?
-            <textarea name="reason" rows="4" required onblur="checkEmpty(this)"></textarea>
         </label>
     </fieldset>
 
     <div class="buttons">
-        <input type="submit" value="Submit">
-        <input type="reset" value="Reset">
+        <button type="submit">Submit</button>
+        <button type="button" onclick="goToView()">View Signups</button>
     </div>
-
 </form>
 
 </body>
